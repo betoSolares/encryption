@@ -14,7 +14,8 @@ namespace encryption
             // JS
             bundles.Add(new ScriptBundle("~/bundles/scripts").Include(
                        "~/Scripts/jquery-3.4.1.min.js",
-                       "~/Scripts/file-chooser.js"));
+                       "~/Scripts/file-chooser.js",
+                       "~/Scripts/keys.js"));
         }
     }
 }
