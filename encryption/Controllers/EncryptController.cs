@@ -63,7 +63,17 @@ namespace encryption.Controllers
                         int numericKey = int.Parse(key);
                         if (cipher.Equals("ZigZag"))
                         {
-                            // ZigZag encription
+                            ZigZagUtils zigZag = new ZigZagUtils();
+                            try
+                            {
+                                zigZag.Encrypt(uploadedPath, numericKey, ref path);
+                                return true;
+                            }
+                            catch
+                            {
+                                error = "Bad Encryption";
+                                return false;
+                            }
                         }
                         else
                         {
