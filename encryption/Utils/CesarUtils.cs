@@ -9,13 +9,23 @@ namespace encryption.Utils
     public class CesarUtils
     {
         private readonly FileUtils fileUtils = new FileUtils();
-        Dictionary<string, string> EncryptationDictionary = new Dictionary<string, string>();
+        Dictionary<char, char> EncryptationDictionary = new Dictionary<char, char>();
 
         public bool EncryptFile(string path, ref string error, ref string newPath, string keyWord)
         {
-            AssignAlphabet(keyWord);
-            EncryptMessage(path);
-            return true;
+            string encryptedPath = fileUtils.CreateFile(Path.GetFileNameWithoutExtension(path) + "_encrypted", ".cif", "~/App_Data/Downloads");
+            if (isKeyWordCorrect(keyWord))
+            {
+                AssignAlphabet(keyWord);
+                EncryptMessage(path, encryptedPath);
+                newPath = encryptedPath;
+                return true;
+            }
+            else
+            {
+                error = "Bad key";
+                return false;
+            }            
         }
 
         /// <summary>Assigns the normal alphabet to the key one in a dictionary</summary>
@@ -24,23 +34,23 @@ namespace encryption.Utils
         private void AssignAlphabet(string keyWord)
         {
             string Alphabet = "abcdefghijklmnñopqrstuvwxyz";            
-            List<string> normalList = new List<string>();
-            List<string> keyList = new List<string>();
+            List<char> normalList = new List<char>();
+            List<char> keyList = new List<char>();
 
             foreach (char c in keyWord)
             {
-                keyList.Add(c.ToString());
+                keyList.Add(c);
             }
 
             foreach (char c in Alphabet)
             {
-                normalList.Add(c.ToString());
+                normalList.Add(c);
 
-                int index = keyList.FindIndex(x=> x == c.ToString());
+                int index = keyList.FindIndex(x=> x == c);
 
                 if (index == -1)
                 {
-                    keyList.Add(c.ToString());
+                    keyList.Add(c);
                 }
             }
 
@@ -50,17 +60,57 @@ namespace encryption.Utils
             }            
         }
 
-        private void EncryptMessage(string path)
+        private void EncryptMessage(string path, string newPath)
         {
             BinaryReader reader = new BinaryReader(new FileStream(path, FileMode.Open));
-            BinaryWriter writer = new BinaryWriter(new FileStream(path, FileMode.Open, FileAccess.Write));
+            BinaryWriter writer = new BinaryWriter(new FileStream(newPath, FileMode.Open, FileAccess.Write));
             while (reader.BaseStream.Position != reader.BaseStream.Length)
             {
-                char character = reader.ReadChar();                
+                char character = reader.ReadChar();
+                bool isUpper = char.IsUpper(character);
+                char index;
+                if (isUpper)
+                {
+                    char lower = char.ToLower(character);
+                    index = EncryptationDictionary.FirstOrDefault(x => x.Key == lower).Value;
+                }
+                else
+                {
+                    index = EncryptationDictionary.FirstOrDefault(x => x.Key == character).Value;
+                }                                
                 
+                if (index != 0)
+                {
+                    if (isUpper)
+                    {
+                        writer.Write(char.ToUpper(index));
+                    }
+                    else
+                    {
+                        writer.Write(index);
+                    }                    
+                }                
+                else
+                {
+                    writer.Write(character);
+                }               
             }
             reader.Close();
             writer.Close();
+        }
+
+        private bool isKeyWordCorrect(string keyWord)
+        {
+            foreach (char c in keyWord)
+            {
+                int count = keyWord.ToCharArray().Count(x => x == c);
+
+                if (count != 1)
+                {
+                    return false;
+                }
+            }
+            return true;
         }
     }
 }

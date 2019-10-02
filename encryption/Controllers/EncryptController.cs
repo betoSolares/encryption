@@ -21,12 +21,12 @@ namespace encryption.Controllers
         }
 
         [HttpPost]
-        public ActionResult Encrypt(HttpPostedFileBase file, string key, string algorithm)
+        public ActionResult Encrypt(HttpPostedFileBase file, string key, string cipher)
         {
             string error = string.Empty;
             string encryptedPath = string.Empty;
             string keyWord = key;            
-            if (DidEncryptationCorrect(file, ref error, ref encryptedPath, algorithm, keyWord))
+            if (DidEncryptationCorrect(file, ref error, ref encryptedPath, cipher, keyWord))
             {
                 ViewBag.Message = "SUCCESS";
                 return fileUtils.DownloadFile(encryptedPath);
@@ -38,7 +38,7 @@ namespace encryption.Controllers
             }           
         }
 
-        private bool DidEncryptationCorrect(HttpPostedFileBase file, ref string error, ref string encryptedPath, string algorithm, string keyWord)
+        private bool DidEncryptationCorrect(HttpPostedFileBase file, ref string error, ref string encryptedPath, string cipher, string keyWord)
         {
             if (fileUtils.IsFileTypeCorrect(file, ".txt",ref error))
             {
@@ -50,16 +50,16 @@ namespace encryption.Controllers
                 }
                 else
                 {
-                    if (algorithm.Equals("Caesar"))
+                    if (cipher.Equals("Caesar"))
                     {
-                        if (isKeyWordCorrect(keyWord))
+                        if (caesarUtils.EncryptFile(originalPath, ref error, ref encryptedPath, keyWord))
                         {
-                            return caesarUtils.EncryptFile(originalPath, ref error, ref encryptedPath, keyWord);
+                            return true;
                         }
                         else
                         {
-
-                        }                        
+                            return false;
+                        }
                     }
                     return true;
                 }
@@ -68,20 +68,6 @@ namespace encryption.Controllers
             {
                 return false;
             }
-        }
-
-        private bool isKeyWordCorrect(string keyWord)
-        {
-            foreach (char c in keyWord)
-            {
-                int count = keyWord.ToCharArray().Count(x => x == c);
-
-                if (count != 1)
-                {
-                    return false;
-                }
-            }
-            return true;
-        }
+        }        
     }
 }
