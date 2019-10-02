@@ -8,6 +8,8 @@ namespace encryption.Utils
         public void Encrypt(string path, int key)
         {
             int length = GetLength(path);
+            char[,] matrix = CreateMatrix(key, length);
+            matrix = FillMatrix(matrix, length, key, path);
         }
 
         /// <summary>Create the matrix</summary>
@@ -24,6 +26,34 @@ namespace encryption.Utils
                     matrix[i, j] = Convert.ToChar(1);
                 }
             }
+            return matrix;
+        }
+
+        /// <summary>Fill the matrix with the chars in the file</summary>
+        /// <param name="matrix">The matrix to fill</param>
+        /// <param name="length">The length of the text</param>
+        /// <param name="key">The key for the encryption</param>
+        /// <param name="path">The path to the file to read</param>
+        /// <returns>A matrix filled with the characters in the file</returns>
+        private char[,] FillMatrix(char[,] matrix, int length, int key, string path)
+        {
+            bool isDirectionDown = false;
+            int row = 0;
+            int columns = 0;
+            StreamReader reader = new StreamReader(path);
+            do
+            {
+                if (row == 0 || row == key - 1)
+                    isDirectionDown = !isDirectionDown;
+                char character = (char)reader.Read();
+                matrix[row, columns] = character;
+                if (isDirectionDown)
+                    row++;
+                else
+                    row--;
+                columns++;
+            } while (!reader.EndOfStream);
+            reader.Close();
             return matrix;
         }
 
