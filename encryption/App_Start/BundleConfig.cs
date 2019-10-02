@@ -8,11 +8,13 @@ namespace encryption
         {
             // CSS
             bundles.Add(new StyleBundle("~/bundles/style").Include(
-                        "~/Styles/menu.css"));
+                        "~/Styles/menu.css",
+                        "~/Styles/file-chooser.css"));
 
             // JS
-            bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
-                       "~/Scripts/jquery-3.4.1.min.js"));
+            bundles.Add(new ScriptBundle("~/bundles/scripts").Include(
+                       "~/Scripts/jquery-3.4.1.min.js",
+                       "~/Scripts/file-chooser.js"));
         }
     }
 }
