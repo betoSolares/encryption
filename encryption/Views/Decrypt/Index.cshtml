@@ -1,0 +1,32 @@
+﻿@{
+    ViewBag.Title = "Desencriptar Archivos";
+    Layout = "~/Views/Shared/Layout.cshtml";
+}
+<input type="hidden" id="state" value="@ViewBag.Message" />
+<div id="alertBox" class="alertBox" style="display: none">
+    <span class="closebtn" id="closebtn">&times;</span>
+    <p id="message"></p>
+</div>
+<div style="text-align: center">
+    <form action="/Decrypt/Decrypt" method="post" enctype="multipart/form-data" style="display: inline-block">
+        <h1>Desencriptar</h1>
+        <input type="file" class="input-file" name="file" id="file" accept=".cif">
+        <label for="file" class="file">
+            <i class="fas fa-file-upload"></i><br />Selecciona un archivo
+        </label>
+        <p>Tipo de cifrado</p>
+        <label>
+            <input checked type='radio' name="cipher" value="ZigZag">
+            <span class="checkable">ZigZag</span>
+        </label><br />
+        <input id="radio2" type='radio' name="cipher" value="Caesar">
+        <label for="radio2" class="checkable">Cesar</label><br />
+        <input id="radio3" type='radio' name="cipher" value="Spiral">
+        <label for="radio3" class="checkable">Espiral</label><br />
+        <div id="keys" style="display: inline-block">
+            <p>Clave: </p>
+            <input type="number" name="key" min="1" max="21474836" placeholder="Niveles de profundidad" required />
+        </div><br /><br />
+        <button type="submit">Desencriptar</button>
+    </form>
+</div>
