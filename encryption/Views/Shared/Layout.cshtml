@@ -1,0 +1,29 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewBag.Title</title>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://unpkg.com/picnic" />
+    @Styles.Render("~/bundles/style")
+</head>
+<body>
+    <div style="overflow: hidden;height: 53px;">
+        <nav class="imponent">
+            <a href="/Encrypt" class="brand">
+                <span>Encriptador</span>
+            </a>
+            <input id="bmenub" type="checkbox" class="show">
+            <label for="bmenub" class="burger pseudo button">&#9776;</label>
+            <div class="menu">
+                <a href="/Encrypt" class="button">Encriptar</a>
+                <a href="/Decrypt" class="button">Desencriptar</a>
+            </div>
+        </nav>
+    </div>
+    @RenderBody()
+    @RenderSection("scripts", required: false)
+    @Scripts.Render("~/bundles/scripts")
+</body>
+</html>

@@ -7,7 +7,8 @@ namespace encryption
         public static void RegisterBundles(BundleCollection bundles)
         {
             // CSS
-            //bundles.Add(new StyleBundle("~/bundles/style").Include());
+            bundles.Add(new StyleBundle("~/bundles/style").Include(
+                        "~/Styles/menu.css"));
 
             // JS
             bundles.Add(new ScriptBundle("~/bundles/jquery").Include(

@@ -1,0 +1,11 @@
+﻿nav {
+    background-color: #e8e8e8;
+    position: absolute;
+}
+
+
+.imponent .brand {
+    color: #000000;
+    font-size: 25px;
+    text-transform: uppercase;
+}
