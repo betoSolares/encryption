@@ -9,13 +9,15 @@ namespace encryption
             // CSS
             bundles.Add(new StyleBundle("~/bundles/style").Include(
                         "~/Styles/menu.css",
-                        "~/Styles/file-chooser.css"));
+                        "~/Styles/file-chooser.css",
+                        "~/Styles/alert.css"));
 
             // JS
             bundles.Add(new ScriptBundle("~/bundles/scripts").Include(
                        "~/Scripts/jquery-3.4.1.min.js",
                        "~/Scripts/file-chooser.js",
-                       "~/Scripts/keys.js"));
+                       "~/Scripts/keys.js",
+                       "~/Scripts/alert.js"));
         }
     }
 }
