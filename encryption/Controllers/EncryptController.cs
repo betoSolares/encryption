@@ -1,4 +1,4 @@
-﻿using encryption.Utils;
+using encryption.Utils;
 using System.Web;
 using System.Web.Mvc;
 
@@ -32,7 +32,7 @@ namespace encryption.Controllers
             {
                 ViewBag.Message = error;
                 return View("Index");
-            }
+            }           
         }
 
         /// <summary>Try to encrypt the file with the specific cipher algorithm</summary>
@@ -56,7 +56,16 @@ namespace encryption.Controllers
                 {
                     if (cipher.Equals("Caesar"))
                     {
-                        // Caesar encription
+                        CaesarUtils caesarUtils = new CaesarUtils();
+                        if (caesarUtils.EncryptFile(uploadedPath, ref error, ref path, key))
+                        {
+                            return true;
+                        }
+                        else
+                        {
+                            error = "Bad Encryption";
+                            return false;
+                        }
                     }
                     else
                     {

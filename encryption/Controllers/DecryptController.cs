@@ -1,4 +1,4 @@
-﻿using encryption.Utils;
+using encryption.Utils;
 using System.Web;
 using System.Web.Mvc;
 
@@ -56,7 +56,16 @@ namespace encryption.Controllers
                 {
                     if (cipher.Equals("Caesar"))
                     {
-                        // Caesar decription
+                        CaesarUtils caesarUtils = new CaesarUtils();
+                        if (caesarUtils.DecryptFile(uploadedPath, ref error, ref path, key))
+                        {
+                            return true;
+                        }
+                        else
+                        {
+                            error = "Bad Encryption";
+                            return false;
+                        }
                     }
                     else
                     {
@@ -78,9 +87,9 @@ namespace encryption.Controllers
                         else
                         {
                             // Spiral decription
+                            return true;
                         }
                     }
-                    return true;
                 }
             }
             else
