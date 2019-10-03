@@ -101,9 +101,11 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Global.asax" />
+    <Content Include="Scripts\alert.js" />
     <Content Include="Scripts\file-chooser.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />
     <Content Include="Scripts\keys.js" />
+    <Content Include="Styles\alert.css" />
     <Content Include="Styles\file-chooser.css" />
     <Content Include="Styles\menu.css" />
     <Content Include="Web.config" />
