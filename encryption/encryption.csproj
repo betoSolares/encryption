@@ -119,13 +119,9 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-<<<<<<< HEAD
-    <Compile Include="Utils\CesarUtils.cs" />
-    <Compile Include="Utils\FileUtils.cs" />
-=======
+    <Compile Include="Utils\CaesarUtils.cs" />
     <Compile Include="Utils\FileUtils.cs" />
     <Compile Include="Utils\ZigZagUtils.cs" />
->>>>>>> e87068079eba544c1ed7f7975d57e03898ae6a63
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\web.config" />

@@ -1,16 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Web;
 
 namespace encryption.Utils
 {
-    public class CesarUtils
+    public class CaesarUtils
     {
         private readonly FileUtils fileUtils = new FileUtils();
         Dictionary<char, char> EncryptationDictionary = new Dictionary<char, char>();
 
+        /// <summary></summary>
+        /// <param name="path"></param>
+        /// <param name="error"></param>
+        /// <param name="newPath"></param>
+        /// <param name="keyWord"></param>
+        /// <returns></returns>
         public bool EncryptFile(string path, ref string error, ref string newPath, string keyWord)
         {
             string encryptedPath = fileUtils.CreateFile(Path.GetFileNameWithoutExtension(path) + "_encrypted", ".cif", "~/App_Data/Downloads");
@@ -28,6 +32,12 @@ namespace encryption.Utils
             }            
         }
 
+        /// <summary>Verifies and uses two methods that assign the alphabet and decrypt the message entered</summary>
+        /// <param name="path">Path given to read the encrypetd message</param>
+        /// <param name="error">Error that may occur</param>
+        /// <param name="newPath">Path to download the new decrypted message</param>
+        /// <param name="keyWord">Key entered by user to decrypt the message</param>
+        /// <returns>True if the key doesn't have repeated letters, otherwise false</returns>
         public bool DecryptFile(string path, ref string error, ref string newPath, string keyWord)
         {
             string decryptedPath = fileUtils.CreateFile(Path.GetFileNameWithoutExtension(path), ".txt", "~/App_Data/Downloads");
@@ -50,8 +60,7 @@ namespace encryption.Utils
         }
 
         /// <summary>Assigns the normal alphabet to the key one in a dictionary</summary>
-        /// <param name="keyWord">Entered by the user, will be used to create the new alphabet</param>
-        /// <returns>true for the moment</returns>
+        /// <param name="keyWord">Entered by the user, will be used to create the new alphabet</param>        
         private void AssignAlphabet(string keyWord)
         {
             string Alphabet = "abcdefghijklmnñopqrstuvwxyz";            
@@ -81,6 +90,9 @@ namespace encryption.Utils
             }            
         }
 
+        /// <summary>Reads original message and encrypts it, then writes it in a new file</summary>
+        /// <param name="path">Path with the original message</param>
+        /// <param name="newPath">Path to write the encrypted message</param>
         private void EncryptMessage(string path, string newPath)
         {
             BinaryReader reader = new BinaryReader(new FileStream(path, FileMode.Open));
@@ -120,6 +132,9 @@ namespace encryption.Utils
             writer.Close();
         }
 
+        /// <summary>Reads encrypted message, then writes the decrypted message in a new file</summary>
+        /// <param name="path">Path with encrypted message</param>
+        /// <param name="newPath">Path to write the new decrypted message</param>
         private void DecryptMessage(string path, string newPath)
         {
             BinaryReader reader = new BinaryReader(new FileStream(path, FileMode.Open));
@@ -159,6 +174,9 @@ namespace encryption.Utils
             writer.Close();
         }
 
+        /// <summary>Checks if the key doesn't have repeated letters</summary>
+        /// <param name="keyWord">Key entered by the user</param>
+        /// <returns>True if it doesn't have repeated letter, otherwise false</returns>
         private bool isKeyWordCorrect(string keyWord)
         {
             foreach (char c in keyWord)

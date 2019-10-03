@@ -57,7 +57,7 @@ namespace encryption.Controllers
                     if (cipher.Equals("Caesar"))
                     {
                         CaesarUtils caesarUtils = new CaesarUtils();
-                        if (caesarUtils.EncryptFile(originalPath, ref error, ref encryptedPath, keyWord))
+                        if (caesarUtils.EncryptFile(uploadedPath, ref error, ref path, key))
                         {
                             return true;
                         }

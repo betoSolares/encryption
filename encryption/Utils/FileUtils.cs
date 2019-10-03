@@ -10,12 +10,7 @@ namespace encryption.Utils
         /// <summary>Create an empty file</summary>
         /// <param name="filename">The name for the file</param>
         /// <param name="extension">The extension for the file</param>
-<<<<<<< HEAD
-        /// <param name="directory">The directory to save the file</param>        
-=======
         /// <param name="directory">The directory to save the file</param>
-        /// <param name="type">The type of the file, can be normal and compressed</param>
->>>>>>> e87068079eba544c1ed7f7975d57e03898ae6a63
         /// <returns>The path of the file, if ERROR check the type</returns>
         public string CreateFile(string filename, string extension, string directory)
         {
@@ -84,8 +79,4 @@ namespace encryption.Utils
             return path;
         }
     }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> e87068079eba544c1ed7f7975d57e03898ae6a63

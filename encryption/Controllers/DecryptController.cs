@@ -87,6 +87,7 @@ namespace encryption.Controllers
                         else
                         {
                             // Spiral decription
+                            return true;
                         }
                     }
                 }
