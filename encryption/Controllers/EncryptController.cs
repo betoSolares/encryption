@@ -85,8 +85,17 @@ namespace encryption.Controllers
                             }
                         }
                         else
-                        {
-                            // Spiral encription
+                        {                        
+                            SpiralUtils spiral = new SpiralUtils();
+                            try
+                            {
+                                spiral.Encrypt(uploadedPath, numericKey, ref path);
+                            }
+                            catch 
+                            {
+
+                                throw;
+                            }
                         }
                     }
                     return true;
