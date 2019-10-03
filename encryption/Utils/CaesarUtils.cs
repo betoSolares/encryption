@@ -69,7 +69,15 @@ namespace encryption.Utils
 
             foreach (char c in keyWord)
             {
-                keyList.Add(c);
+                if (char.IsUpper(c))
+                {
+                    char cLower = char.ToLower(c);
+                    keyList.Add(cLower);
+                }
+                else
+                {
+                    keyList.Add(c);
+                }                
             }
 
             foreach (char c in Alphabet)
