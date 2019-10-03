@@ -28,6 +28,27 @@ namespace encryption.Utils
             }            
         }
 
+        public bool DecryptFile(string path, ref string error, ref string newPath, string keyWord)
+        {
+            string decryptedPath = fileUtils.CreateFile(Path.GetFileNameWithoutExtension(path), ".txt", "~/App_Data/Downloads");
+            bool isEmpty = (EncryptationDictionary.Count == 0);
+            if (isKeyWordCorrect(keyWord))
+            {
+                if (isEmpty)
+                {
+                    AssignAlphabet(keyWord);
+                }                
+                DecryptMessage(path, decryptedPath);
+                newPath = decryptedPath;
+                return true;
+            }
+            else
+            {
+                error = "Bad key";
+                return false;
+            }
+        }
+
         /// <summary>Assigns the normal alphabet to the key one in a dictionary</summary>
         /// <param name="keyWord">Entered by the user, will be used to create the new alphabet</param>
         /// <returns>true for the moment</returns>
@@ -94,6 +115,45 @@ namespace encryption.Utils
                 {
                     writer.Write(character);
                 }               
+            }
+            reader.Close();
+            writer.Close();
+        }
+
+        private void DecryptMessage(string path, string newPath)
+        {
+            BinaryReader reader = new BinaryReader(new FileStream(path, FileMode.Open));
+            BinaryWriter writer = new BinaryWriter(new FileStream(newPath, FileMode.Open, FileAccess.Write));
+            while (reader.BaseStream.Position != reader.BaseStream.Length)
+            {
+                char character = reader.ReadChar();
+                bool isUpper = char.IsUpper(character);
+                char index;
+                if (isUpper)
+                {
+                    char lower = char.ToLower(character);
+                    index = EncryptationDictionary.FirstOrDefault(x => x.Value == lower).Key;
+                }
+                else
+                {
+                    index = EncryptationDictionary.FirstOrDefault(x => x.Value == character).Key;
+                }
+
+                if (index != 0)
+                {
+                    if (isUpper)
+                    {
+                        writer.Write(char.ToUpper(index));
+                    }
+                    else
+                    {
+                        writer.Write(index);
+                    }
+                }
+                else
+                {
+                    writer.Write(character);
+                }
             }
             reader.Close();
             writer.Close();
