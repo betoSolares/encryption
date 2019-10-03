@@ -101,9 +101,11 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Global.asax" />
+    <Content Include="Scripts\alert.js" />
     <Content Include="Scripts\file-chooser.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />
     <Content Include="Scripts\keys.js" />
+    <Content Include="Styles\alert.css" />
     <Content Include="Styles\file-chooser.css" />
     <Content Include="Styles\menu.css" />
     <Content Include="Web.config" />
@@ -117,8 +119,13 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+<<<<<<< HEAD
     <Compile Include="Utils\CesarUtils.cs" />
     <Compile Include="Utils\FileUtils.cs" />
+=======
+    <Compile Include="Utils\FileUtils.cs" />
+    <Compile Include="Utils\ZigZagUtils.cs" />
+>>>>>>> e87068079eba544c1ed7f7975d57e03898ae6a63
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\web.config" />

@@ -1,14 +1,11 @@
-﻿using System.Web.Mvc;
-using System.Web;
 using encryption.Utils;
-using System.Linq;
-
+using System.Web;
+using System.Web.Mvc;
 
 namespace encryption.Controllers
 {
     public class EncryptController : Controller
     {
-        private readonly CesarUtils caesarUtils = new CesarUtils();
         private readonly FileUtils fileUtils = new FileUtils();
 
         // Default view for the encription
@@ -20,16 +17,16 @@ namespace encryption.Controllers
             return View();
         }
 
+        // Encrypt the file uploaded
         [HttpPost]
-        public ActionResult Encrypt(HttpPostedFileBase file, string key, string cipher)
+        public ActionResult Encrypt(HttpPostedFileBase file, string cipher, string key)
         {
             string error = string.Empty;
-            string encryptedPath = string.Empty;
-            string keyWord = key;            
-            if (DidEncryptationCorrect(file, ref error, ref encryptedPath, cipher, keyWord))
+            string path = string.Empty;
+            if (DidEncription(file, ref error, ref path, cipher, key))
             {
                 ViewBag.Message = "SUCCESS";
-                return fileUtils.DownloadFile(encryptedPath);
+                return fileUtils.DownloadFile(path);
             }
             else
             {
@@ -38,12 +35,19 @@ namespace encryption.Controllers
             }           
         }
 
-        private bool DidEncryptationCorrect(HttpPostedFileBase file, ref string error, ref string encryptedPath, string cipher, string keyWord)
+        /// <summary>Try to encrypt the file with the specific cipher algorithm</summary>
+        /// <param name="file">The file uploaded</param>
+        /// <param name="error">The error to send back</param>
+        /// <param name="path">The path to the encrypted file</param>
+        /// <param name="cipher">The cipher algorithm to use</param>
+        /// <param name="key">The key for the encription</param>
+        /// <returns>True if the file was encripted, otherwise false</returns>
+        private bool DidEncription(HttpPostedFileBase file, ref string error, ref string path, string cipher, string key)
         {
-            if (fileUtils.IsFileTypeCorrect(file, ".txt",ref error))
+            if (fileUtils.IsFileTypeCorrect(file, ".txt", ref error))
             {
-                string originalPath = fileUtils.SaveFile(file, "~/App_Data/Uploads");
-                if (fileUtils.IsFileEmpty(originalPath))
+                string uploadedPath = fileUtils.SaveFile(file, "~/App_Data/Uploads");
+                if (fileUtils.IsFileEmpty(uploadedPath))
                 {
                     error = "Empty file";
                     return false;
@@ -52,13 +56,37 @@ namespace encryption.Controllers
                 {
                     if (cipher.Equals("Caesar"))
                     {
+                        CaesarUtils caesarUtils = new CaesarUtils();
                         if (caesarUtils.EncryptFile(originalPath, ref error, ref encryptedPath, keyWord))
                         {
                             return true;
                         }
                         else
                         {
+                            error = "Bad Encryption";
                             return false;
+                        }
+                    }
+                    else
+                    {
+                        int numericKey = int.Parse(key);
+                        if (cipher.Equals("ZigZag"))
+                        {
+                            ZigZagUtils zigZag = new ZigZagUtils();
+                            try
+                            {
+                                zigZag.Encrypt(uploadedPath, numericKey, ref path);
+                                return true;
+                            }
+                            catch
+                            {
+                                error = "Bad Encryption";
+                                return false;
+                            }
+                        }
+                        else
+                        {
+                            // Spiral encription
                         }
                     }
                     return true;
@@ -68,6 +96,6 @@ namespace encryption.Controllers
             {
                 return false;
             }
-        }        
+        }
     }
 }
