@@ -19,11 +19,11 @@ namespace encryption.Controllers
 
         // Encrypt the file uploaded
         [HttpPost]
-        public ActionResult Encrypt(HttpPostedFileBase file, string cipher, string key)
+        public ActionResult Encrypt(HttpPostedFileBase file, string cipher, string key, string direction)
         {
             string error = string.Empty;
             string path = string.Empty;
-            if (DidEncription(file, ref error, ref path, cipher, key))
+            if (DidEncription(file, ref error, ref path, cipher, key, direction))
             {
                 ViewBag.Message = "SUCCESS";
                 return fileUtils.DownloadFile(path);
@@ -41,8 +41,9 @@ namespace encryption.Controllers
         /// <param name="path">The path to the encrypted file</param>
         /// <param name="cipher">The cipher algorithm to use</param>
         /// <param name="key">The key for the encription</param>
+        /// <param name="direction">The direction for the spiral cipher</param>
         /// <returns>True if the file was encripted, otherwise false</returns>
-        private bool DidEncription(HttpPostedFileBase file, ref string error, ref string path, string cipher, string key)
+        private bool DidEncription(HttpPostedFileBase file, ref string error, ref string path, string cipher, string key, string direction)
         {
             if (fileUtils.IsFileTypeCorrect(file, ".txt", ref error))
             {
@@ -89,16 +90,16 @@ namespace encryption.Controllers
                             SpiralUtils spiral = new SpiralUtils();
                             try
                             {
-                                spiral.Encrypt(uploadedPath, numericKey, ref path);
+                                spiral.Encrypt(uploadedPath, numericKey, ref path, direction);
+                                return true;
                             }
                             catch 
                             {
-
-                                throw;
+                                error = "Bad Encryption";
+                                return false;
                             }
                         }
                     }
-                    return true;
                 }
             }
             else

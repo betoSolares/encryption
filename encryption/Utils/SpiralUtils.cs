@@ -5,13 +5,21 @@ namespace encryption.Utils
 {
     public class SpiralUtils
     {
-        public void Encrypt(string path, int key, ref string newPath)
+        /// <summary>Encrypt the message in the file</summary>
+        /// <param name="path">The path to the file</param>
+        /// <param name="key">The key for the encription</param>
+        /// <param name="newPath">The path of the new file</param>
+        /// <param name="direction">The direction to read the matrix</param>
+        public void Encrypt(string path, int key, ref string newPath, string direction)
         {
             int length = GetLength(path);
             int n = CalculateN(key, length);
             char[,] matrix = CreateMatrix(key, n);
             matrix = FillMatrix(matrix, n, path);
-            newPath = WriteDecryptedMessage(matrix, key, n);
+            if (direction.Equals("Right"))
+                newPath = WriteRightEncryptedMessage(matrix, key, n);
+            else
+                newPath = WriteLeftEncryptedMessage(matrix, key, n);
         }
 
         /// <summary>Calculate the N value</summary>
@@ -40,6 +48,11 @@ namespace encryption.Utils
             return matrix;
         }
 
+        /// <summary>Fill the matrix</summary>
+        /// <param name="matrix">The matrix to fill</param>
+        /// <param name="n">The n length of the matrix</param>
+        /// <param name="path">The path of the file to read</param>
+        /// <returns>A matrix with all the chars in the file</returns>
         private char[,] FillMatrix(char[,] matrix, int n, string path)
         {
             int row = 0;
@@ -74,13 +87,82 @@ namespace encryption.Utils
             return length;
         }
 
-        private string WriteDecryptedMessage(char[,] matrix, int m, int n)
+        /// <summary>Write the encrypted message to the left</summary>
+        /// <param name="matrix">The matrix with the chars</param>
+        /// <param name="m">The m length of the matrix</param>
+        /// <param name="n">The n length of the matrix</param>
+        /// <returns>The path of the new file encrypted</returns>
+        private string WriteLeftEncryptedMessage(char[,] matrix, int m, int n)
         {
             string path = new FileUtils().CreateFile("EncryptedMessage", ".txt", "~/App_Data/Downloads");
-            int i, k = 0, l = 0;
+            int k = 0;
+            int l = 0;
+            string debug = string.Empty;
             while (k < m && l < n)
             {
-                for (i = l; i < n; ++i)
+                // Down
+                for (int i = k; i < m; i++)
+                {
+                    StreamWriter writer = new StreamWriter(path, true);
+                    debug += matrix[i, k];
+                    writer.Write(matrix[i, k]);
+                    writer.Close();
+                }
+                k++;
+
+                // Right
+                for (int i = k; i < n; i++)
+                {
+                    StreamWriter writer = new StreamWriter(path, true);
+                    debug += matrix[m - 1, i];
+                    writer.Write(matrix[m - 1, i]);
+                    writer.Close();
+                }
+                m--;
+                
+                if (k < n)
+                {
+                    // Up
+                    for (int i = m - 1; i >= l; i--)
+                    {
+                        StreamWriter writer = new StreamWriter(path, true);
+                        debug += matrix[i, n - 1];
+                        writer.Write(matrix[i, n - 1]);
+                        writer.Close();
+                    }
+                    n--;
+                }
+
+                if (l < m)
+                {
+                    // Left
+                    for (int i = n - 1; i >= k; i--)
+                    {
+                        StreamWriter writer = new StreamWriter(path, true);
+                        debug += matrix[l, i];
+                        writer.Write(matrix[l, i]);
+                        writer.Close();
+                    }
+                    l++;
+                }
+            }
+            return path;
+        }
+
+        /// <summary>Write the encrypted message to the rigth</summary>
+        /// <param name="matrix">The matrix with the chars</param>
+        /// <param name="m">The m length of the matrix</param>
+        /// <param name="n">The n length of the matrix</param>
+        /// <returns>The path of the new file encrypted</returns>
+        private string WriteRightEncryptedMessage(char[,] matrix, int m, int n)
+        {
+            string path = new FileUtils().CreateFile("EncryptedMessage", ".txt", "~/App_Data/Downloads");
+            int k = 0;
+            int l = 0;
+            while (k < m && l < n)
+            {
+                // Right
+                for (int i = l; i < n; i++)
                 {
                     StreamWriter writer = new StreamWriter(path, true);
                     writer.Write(matrix[k, i]);
@@ -88,7 +170,8 @@ namespace encryption.Utils
                 }
                 k++;
 
-                for (i = k; i < m; ++i)
+                // Down
+                for (int i = k; i < m; i++)
                 {
                     StreamWriter writer = new StreamWriter(path, true);
                     writer.Write(matrix[i, n - 1]);
@@ -98,7 +181,8 @@ namespace encryption.Utils
 
                 if (k < m)
                 {
-                    for (i = n - 1; i >= l; --i)
+                    // Left
+                    for (int i = n - 1; i >= l; i--)
                     {
                         StreamWriter writer = new StreamWriter(path, true);
                         writer.Write(matrix[m - 1, i]);
@@ -109,7 +193,8 @@ namespace encryption.Utils
 
                 if (l < n)
                 {
-                    for (i = m - 1; i >= k; --i)
+                    // Up
+                    for (int i = m - 1; i >= k; i--)
                     {
                         StreamWriter writer = new StreamWriter(path, true);
                         writer.Write(matrix[i, l]);
