@@ -64,7 +64,8 @@ namespace encryption.Controllers
                         }
                         else
                         {
-                            error = "Bad Encryption";
+                            if (!error.Equals("Bad key"))
+                                error = "Bad Encryption";
                             return false;
                         }
                     }

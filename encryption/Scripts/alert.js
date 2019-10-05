@@ -14,6 +14,8 @@
             $('#message').text("El tipo de archivo no es el esperado.");
         } else if ($('#state').val() == "Null file") {
             $('#message').text("Por favor selecciona un archivo para cifrar.");
+        } else if ($('#state').val() == "Bad key") {
+            $('#message').text("La clave no puede contener letras repetidas.");
         }
     }
 })
