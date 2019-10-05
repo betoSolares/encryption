@@ -17,7 +17,7 @@ namespace encryption.Utils
         /// <returns>True if the encryption is successful, otherwise false</returns>
         public bool EncryptFile(string path, ref string error, ref string newPath, string keyWord)
         {
-            string encryptedPath = fileUtils.CreateFile(Path.GetFileNameWithoutExtension(path) + "_encrypted", ".cif", "~/App_Data/Downloads");
+            string encryptedPath = fileUtils.CreateFile(Path.GetFileNameWithoutExtension(path), ".cif", "~/App_Data/Downloads");
             if (IsKeyWordCorrect(keyWord))
             {
                 AssignAlphabet(keyWord);

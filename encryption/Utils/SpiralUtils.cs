@@ -16,10 +16,11 @@ namespace encryption.Utils
             int n = CalculateN(key, length);
             char[,] matrix = CreateMatrix(key, n);
             matrix = FillMatrix(matrix, n, path);
+            string name = Path.GetFileNameWithoutExtension(path);
             if (direction.Equals("Right"))
-                newPath = WriteRightEncryptedMessage(matrix, key, n);
+                newPath = WriteRightEncryptedMessage(matrix, key, n, name);
             else
-                newPath = WriteLeftEncryptedMessage(matrix, key, n);
+                newPath = WriteLeftEncryptedMessage(matrix, key, n, name);
         }
 
         /// <summary>Decrypt the message in the file</summary>
@@ -36,7 +37,8 @@ namespace encryption.Utils
                 matrix = RegenerateMatrixRight(matrix, path, key, n);
             else
                 matrix = RegenerateMatrixLeft(matrix, path, key, n);
-            newPath = WriteDecryptedMessage(matrix, key, n);
+            string name = Path.GetFileNameWithoutExtension(path);
+            newPath = WriteDecryptedMessage(matrix, key, n, name);
         }
 
         /// <summary>Calculate the N value</summary>
@@ -219,9 +221,9 @@ namespace encryption.Utils
         /// <param name="m">The m length of the matrix</param>
         /// <param name="n">The n length og the matrix</param>
         /// <returns>The path of the new file</returns>
-        private string WriteDecryptedMessage(char[,] matrix, int m, int n)
+        private string WriteDecryptedMessage(char[,] matrix, int m, int n, string name)
         {
-            string path = new FileUtils().CreateFile("DecryptedMessage", ".txt", "~/App_Data/Downloads");
+            string path = new FileUtils().CreateFile(name, ".txt", "~/App_Data/Downloads");
             for (int i = 0; i < m; i++)
             {
                 for (int j = 0; j < n; j++)
@@ -242,9 +244,9 @@ namespace encryption.Utils
         /// <param name="m">The m length of the matrix</param>
         /// <param name="n">The n length of the matrix</param>
         /// <returns>The path of the new file encrypted</returns>
-        private string WriteLeftEncryptedMessage(char[,] matrix, int m, int n)
+        private string WriteLeftEncryptedMessage(char[,] matrix, int m, int n, string name)
         {
-            string path = new FileUtils().CreateFile("EncryptedMessage", ".cif", "~/App_Data/Downloads");
+            string path = new FileUtils().CreateFile(name, ".cif", "~/App_Data/Downloads");
             int k = 0;
             int l = 0;
             while (k < m && l < n)
@@ -299,9 +301,9 @@ namespace encryption.Utils
         /// <param name="m">The m length of the matrix</param>
         /// <param name="n">The n length of the matrix</param>
         /// <returns>The path of the new file encrypted</returns>
-        private string WriteRightEncryptedMessage(char[,] matrix, int m, int n)
+        private string WriteRightEncryptedMessage(char[,] matrix, int m, int n, string name)
         {
-            string path = new FileUtils().CreateFile("EncryptedMessage", ".cif", "~/App_Data/Downloads");
+            string path = new FileUtils().CreateFile(name, ".cif", "~/App_Data/Downloads");
             int k = 0;
             int l = 0;
             while (k < m && l < n)
