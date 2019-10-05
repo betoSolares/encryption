@@ -7,18 +7,18 @@ namespace encryption.Utils
     public class CaesarUtils
     {
         private readonly FileUtils fileUtils = new FileUtils();
-        Dictionary<char, char> EncryptationDictionary = new Dictionary<char, char>();
+        private readonly Dictionary<char, char> EncryptationDictionary = new Dictionary<char, char>();
 
-        /// <summary></summary>
-        /// <param name="path"></param>
-        /// <param name="error"></param>
-        /// <param name="newPath"></param>
-        /// <param name="keyWord"></param>
-        /// <returns></returns>
+        /// <summary>Encrypt the file</summary>
+        /// <param name="path">The path to the file</param>
+        /// <param name="error">The error the send back</param>
+        /// <param name="newPath">The path to download</param>
+        /// <param name="keyWord">The key for the encryption</param>
+        /// <returns>True if the encryption is successful, otherwise false</returns>
         public bool EncryptFile(string path, ref string error, ref string newPath, string keyWord)
         {
-            string encryptedPath = fileUtils.CreateFile(Path.GetFileNameWithoutExtension(path) + "_encrypted", ".cif", "~/App_Data/Downloads");
-            if (isKeyWordCorrect(keyWord))
+            string encryptedPath = fileUtils.CreateFile(Path.GetFileNameWithoutExtension(path), ".cif", "~/App_Data/Downloads");
+            if (IsKeyWordCorrect(keyWord))
             {
                 AssignAlphabet(keyWord);
                 EncryptMessage(path, encryptedPath);
@@ -42,7 +42,7 @@ namespace encryption.Utils
         {
             string decryptedPath = fileUtils.CreateFile(Path.GetFileNameWithoutExtension(path), ".txt", "~/App_Data/Downloads");
             bool isEmpty = (EncryptationDictionary.Count == 0);
-            if (isKeyWordCorrect(keyWord))
+            if (IsKeyWordCorrect(keyWord))
             {
                 if (isEmpty)
                 {
@@ -185,7 +185,7 @@ namespace encryption.Utils
         /// <summary>Checks if the key doesn't have repeated letters</summary>
         /// <param name="keyWord">Key entered by the user</param>
         /// <returns>True if it doesn't have repeated letter, otherwise false</returns>
-        private bool isKeyWordCorrect(string keyWord)
+        private bool IsKeyWordCorrect(string keyWord)
         {
             foreach (char c in keyWord)
             {

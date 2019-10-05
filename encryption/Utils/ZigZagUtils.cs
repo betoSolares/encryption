@@ -14,7 +14,8 @@ namespace encryption.Utils
             int length = GetLength(path);
             char[,] matrix = CreateMatrix(key, length);
             matrix = FillMatrix(matrix, key, path);
-            newPath = WriteEncryptedMessage(matrix, key, length);
+            string name = Path.GetFileNameWithoutExtension(path);
+            newPath = WriteEncryptedMessage(matrix, key, length, name);
         }
 
         /// <summary>Decrypt the message in the file</summary>
@@ -27,7 +28,8 @@ namespace encryption.Utils
             char[,] matrix = CreateMatrix(key, length);
             matrix = MarkPlaces(matrix, length, key);
             matrix = ConstructMatrix(matrix, key, length, path);
-            newPath = WriteDecryptedMessage(matrix, key, length);
+            string name = Path.GetFileNameWithoutExtension(path);
+            newPath = WriteDecryptedMessage(matrix, key, length, name);
         }
 
         /// <summary>Fill the matrix with the characters in the file</summary>
@@ -140,9 +142,9 @@ namespace encryption.Utils
         /// <param name="key">The key for the decription</param>
         /// <param name="length">The length of the text</param>
         /// <returns>The path of the new file</returns>
-        private string WriteDecryptedMessage(char[,] matrix, int key, int length)
+        private string WriteDecryptedMessage(char[,] matrix, int key, int length, string name)
         {
-            string path = new FileUtils().CreateFile("DecryptedMessage", ".txt", "~/App_Data/Downloads");
+            string path = new FileUtils().CreateFile(name, ".txt", "~/App_Data/Downloads");
             bool isDirectionDown = false;
             int row = 0;
             int columns = 0;
@@ -172,9 +174,9 @@ namespace encryption.Utils
         /// <param name="key">The key for the encription</param>
         /// <param name="length">The length of the text</param>
         /// <returns>The path of the new file</returns>
-        private string WriteEncryptedMessage(char[,] matrix, int key, int length)
+        private string WriteEncryptedMessage(char[,] matrix, int key, int length, string name)
         {
-            string path = new FileUtils().CreateFile("EncryptedMessage", ".cif", "~/App_Data/Downloads");
+            string path = new FileUtils().CreateFile(name, ".cif", "~/App_Data/Downloads");
             for (int i = 0; i < key; i++)
             {
                 for (int j = 0; j < length; j++)
