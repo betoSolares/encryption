@@ -45,7 +45,7 @@ namespace encryption.Controllers
         /// <returns>True if the file was decompresed, otherwise false</returns>
         private bool DidDecription(HttpPostedFileBase file, ref string error, ref string path, string cipher, string key, string direction)
         {
-            if (fileUtils.IsFileTypeCorrect(file, ".cif", ref error))
+            if (fileUtils.IsFileTypeCorrect(file, ".cif", ref error) && !cipher.Equals("SDES"))
             {
                 string uploadedPath = fileUtils.SaveFile(file, "~/App_Data/Uploads");
                 if (fileUtils.IsFileEmpty(uploadedPath))
@@ -102,6 +102,11 @@ namespace encryption.Controllers
                         }
                     }
                 }
+            }
+            else if (fileUtils.IsFileTypeCorrect(file, ".scif", ref error) && cipher.Equals("SDES"))
+            {
+                // SDES Decryption
+                return true;
             }
             else
             {

@@ -86,7 +86,7 @@ namespace encryption.Controllers
                                 return false;
                             }
                         }
-                        else
+                        else if (cipher.Equals("Spiral"))
                         {                        
                             SpiralUtils spiral = new SpiralUtils();
                             try
@@ -99,6 +99,10 @@ namespace encryption.Controllers
                                 error = "Bad Encryption";
                                 return false;
                             }
+                        }
+                        else
+                        {
+                            // SDES Encryption
                         }
                     }
                 }
