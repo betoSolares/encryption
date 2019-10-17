@@ -105,8 +105,18 @@ namespace encryption.Controllers
             }
             else if (fileUtils.IsFileTypeCorrect(file, ".scif", ref error) && cipher.Equals("SDES"))
             {
-                // SDES Decryption
-                return true;
+                string uploadedPath = fileUtils.SaveFile(file, "~/App_Data/Uploads");
+                int numericKey = int.Parse(key);
+                SdesUtils sdes = new SdesUtils();
+                if (sdes.Decrypt(uploadedPath, numericKey, ref path))
+                {
+                    return true;
+                }
+                else
+                {
+                    error = "Bad Encryption";
+                    return false;
+                }
             }
             else
             {

@@ -1,11 +1,33 @@
 ﻿using encryption.Models;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Text;
 
 namespace encryption.Utils
 {
     public class SdesUtils
     {
+        private readonly Permutations permutations = new Permutations("8537926014", "79358216", "0321", "01323210",
+                                                                      "63572014");
+
+        /// <summary>Decrypt the message in the file</summary>
+        /// <param name="path">The path to the file</param>
+        /// <param name="key">The key for the encription</param>
+        /// <param name="newPath">The path of the new file</param>
+        /// <returns>True if the file was decrypted correct</returns>
+        public bool Decrypt(string path, int key, ref string newPath)
+        {
+            if (permutations.CheckPermutations())
+            {
+                string binaryKey = Convert.ToString(key, 2).PadLeft(10, '0');
+                (string K1, string K2) = GenerateKeys(binaryKey, permutations.P10, permutations.P8);
+                newPath = TransformMessage(path, K1, K2, permutations, "decrypt");
+                return true;
+            }
+            return false;
+        }
+
         /// <summary>Encrypt the message in the file</summary>
         /// <param name="path">The path to the file</param>
         /// <param name="key">The key for the encription</param>
@@ -13,15 +35,54 @@ namespace encryption.Utils
         /// <returns>True if the file was encrypted correct</returns>
         public bool Encrypt(string path, int key, ref string newPath)
         {
-            Permutations permutations = new Permutations("8537926014", "79358216", "0321", "01323210", "63572014");
             if (permutations.CheckPermutations())
             {
                 string binaryKey = Convert.ToString(key, 2).PadLeft(10, '0');
-                (string K1, string K2) keys = GenerateKeys(binaryKey, permutations.P10, permutations.P8);
-                newPath = TransformMessage(path, keys.K1, keys.K2, permutations);
+                (string K1, string K2) = GenerateKeys(binaryKey, permutations.P10, permutations.P8);
+                newPath = TransformMessage(path, K1, K2, permutations, "encrypt");
                 return true;
             }
             return false;
+        }
+
+        /// <summary>Decrypt the specified set of bytes</summary>
+        /// <param name="buffer">The buffer with the bytes to encrypt</param>
+        /// <param name="K1">The first key</param>
+        /// <param name="K2">The second key</param>
+        /// <param name="ip">The IP permutation</param>
+        /// <param name="ep">The EP permutation</param>
+        /// <param name="p4">The P4 permutation</param>
+        /// <param name="iip">The IIP permutation</param>
+        /// <param name="path">The path to write the file</param>
+        private void DecryptBytes(byte[] buffer, string K1, string K2, string ip, string ep, string p4, string iip,
+                                  string path)
+        {
+            StreamWriter writer = new StreamWriter(path, true);
+            foreach (byte Byte in buffer)
+            {
+                string binary = Convert.ToString(Byte, 2).PadLeft(8, '0');
+                string IP = MakePermutations(binary, ip);
+                string firstBlock = IP.Substring(0, 4);
+                string secondBlock = IP.Substring(4, 4);
+                string EP = MakePermutations(secondBlock, ep);
+                string xor = XOR(EP, K2);
+                string SBoxes = SubstitutionBoxes(xor);
+                string P4 = MakePermutations(SBoxes, p4);
+                xor = XOR(P4, firstBlock);
+                string swap = secondBlock + xor;
+                firstBlock = swap.Substring(0, 4);
+                secondBlock = swap.Substring(4, 4);
+                EP = MakePermutations(secondBlock, ep);
+                xor = XOR(EP, K1);
+                SBoxes = SubstitutionBoxes(xor);
+                P4 = MakePermutations(SBoxes, p4);
+                xor = XOR(P4, firstBlock);
+                string union = xor + secondBlock;
+                string IIP = MakePermutations(union, iip);
+                char character = Convert.ToChar(Convert.ToInt32(IIP, 2));
+                writer.Write(character);
+            }
+            writer.Close();
         }
 
         /// <summary>Encrypt the specified set of bytes</summary>
@@ -154,15 +215,24 @@ namespace encryption.Utils
         /// <param name="K2">The second key</param>
         /// <param name="permutations">The permutations defined to use</param>
         /// <returns>The path of the new file</returns>
-        private string TransformMessage(string path, string K1, string K2, Permutations permutations)
+        private string TransformMessage(string path, string K1, string K2, Permutations permutations, string type)
         {
             BinaryReader reader = new BinaryReader(new FileStream(path, FileMode.Open));
             string name = Path.GetFileNameWithoutExtension(path);
-            string newPath = new FileUtils().CreateFile(name, ".scif", "~/App_Data/Downloads");
+            string newPath;
+            if (type.Equals("encrypt"))
+                newPath = new FileUtils().CreateFile(name, ".scif", "~/App_Data/Downloads");
+            else
+                newPath = new FileUtils().CreateFile(name, ".txt", "~/App_Data/Downloads");
             while (reader.BaseStream.Position != reader.BaseStream.Length)
             {
                 byte[] buffer = reader.ReadBytes(1000);
-                EncryptBytes(buffer, K1, K2, permutations.IP, permutations.EP, permutations.P4, permutations.IIP, newPath);
+                if (type.Equals("encrypt"))
+                    EncryptBytes(buffer, K1, K2, permutations.IP, permutations.EP, permutations.P4, permutations.IIP,
+                                 newPath);
+                else
+                    DecryptBytes(buffer, K1, K2, permutations.IP, permutations.EP, permutations.P4, permutations.IIP,
+                                 newPath);
             }
             reader.Close();
             return newPath;
