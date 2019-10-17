@@ -21,8 +21,11 @@ function DisplayKeyInput(value) {
         paragraph.appendTo($("#keys"))
         direction = $('<select name="direction"><option value="Left">Izquierda</option><option value="Right">Derecha</option></select >')
         direction.appendTo($("#keys"))
-    } else {
+    } else if (value == "ZigZag") {
         input = $('<input type="number" name="key" min="1" max="21474836" placeholder="Niveles de profundidad" required />')
+        input.appendTo($("#keys"))
+    } else {
+        input = $('<input type="number" name="key" min="1" max="1023" placeholder="Numero" required />')
         input.appendTo($("#keys"))
     }
 }
