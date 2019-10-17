@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 
 namespace encryption.Utils
 {
@@ -22,7 +21,12 @@ namespace encryption.Utils
             {
                 string binaryKey = Convert.ToString(key, 2).PadLeft(10, '0');
                 (string K1, string K2) = GenerateKeys(binaryKey, permutations.P10, permutations.P8);
-                newPath = TransformMessage(path, K1, K2, permutations, "decrypt");
+                List<string> binaries = ReadFile(path);
+                List<byte> bytes = DecryptBytes(binaries, K1, K2, permutations.IP, permutations.EP, permutations.P4,
+                                                permutations.IIP);
+                string name = Path.GetFileNameWithoutExtension(path);
+                newPath = new FileUtils().CreateFile(name, ".txt", "~/App_Data/Downloads");
+                WriteFile(bytes, newPath);
                 return true;
             }
             return false;
@@ -39,28 +43,32 @@ namespace encryption.Utils
             {
                 string binaryKey = Convert.ToString(key, 2).PadLeft(10, '0');
                 (string K1, string K2) = GenerateKeys(binaryKey, permutations.P10, permutations.P8);
-                newPath = TransformMessage(path, K1, K2, permutations, "encrypt");
+                List<string> binaries = ReadFile(path);
+                List<byte> bytes = EncryptBytes(binaries, K1, K2, permutations.IP, permutations.EP, permutations.P4,
+                                                permutations.IIP);
+                string name = Path.GetFileNameWithoutExtension(path);
+                newPath = new FileUtils().CreateFile(name, ".scif", "~/App_Data/Downloads");
+                WriteFile(bytes, newPath);
                 return true;
             }
             return false;
         }
 
-        /// <summary>Decrypt the specified set of bytes</summary>
-        /// <param name="buffer">The buffer with the bytes to encrypt</param>
+        /// <summary>Decrypt the specified set of binaries</summary>
+        /// <param name="binaries">The list of binaries to decrypt</param>
         /// <param name="K1">The first key</param>
         /// <param name="K2">The second key</param>
         /// <param name="ip">The IP permutation</param>
         /// <param name="ep">The EP permutation</param>
         /// <param name="p4">The P4 permutation</param>
         /// <param name="iip">The IIP permutation</param>
-        /// <param name="path">The path to write the file</param>
-        private void DecryptBytes(byte[] buffer, string K1, string K2, string ip, string ep, string p4, string iip,
-                                  string path)
+        /// <returns>A list with all the bytes to write</returns>
+        private List<byte> DecryptBytes(List<string> binaries, string K1, string K2, string ip, string ep, string p4,
+                                        string iip)
         {
-            StreamWriter writer = new StreamWriter(path, true);
-            foreach (byte Byte in buffer)
+            List<byte> bytes = new List<byte>();
+            foreach (string binary in binaries)
             {
-                string binary = Convert.ToString(Byte, 2).PadLeft(8, '0');
                 string IP = MakePermutations(binary, ip);
                 string firstBlock = IP.Substring(0, 4);
                 string secondBlock = IP.Substring(4, 4);
@@ -79,28 +87,27 @@ namespace encryption.Utils
                 xor = XOR(P4, firstBlock);
                 string union = xor + secondBlock;
                 string IIP = MakePermutations(union, iip);
-                char character = Convert.ToChar(Convert.ToInt32(IIP, 2));
-                writer.Write(character);
+                byte result = Convert.ToByte(Convert.ToInt32(IIP, 2));
+                bytes.Add(result);
             }
-            writer.Close();
+            return bytes;
         }
 
-        /// <summary>Encrypt the specified set of bytes</summary>
-        /// <param name="buffer">The buffer with the bytes to encrypt</param>
+        /// <summary>Encrypt the specified set of binaries</summary>
+        /// <param name="binaries">The list of binaries to encrypt</param>
         /// <param name="K1">The first key</param>
         /// <param name="K2">The second key</param>
         /// <param name="ip">The IP permutation</param>
         /// <param name="ep">The EP permutation</param>
         /// <param name="p4">The P4 permutation</param>
         /// <param name="iip">The IIP permutation</param>
-        /// <param name="path">The path to write the file</param>
-        private void EncryptBytes(byte[] buffer, string K1, string K2, string ip, string ep, string p4, string iip,
-                                  string path)
+        /// <returns>A list with all the bytes to write</returns>
+        private List<byte> EncryptBytes(List<string> binaries, string K1, string K2, string ip, string ep, string p4,
+                                        string iip)
         {
-            StreamWriter writer = new StreamWriter(path, true);
-            foreach(byte Byte in buffer)
+            List<byte> bytes = new List<byte>();
+            foreach(string binary in binaries)
             {
-                string binary = Convert.ToString(Byte, 2).PadLeft(8, '0');
                 string IP = MakePermutations(binary, ip);
                 string firstBlock = IP.Substring(0, 4);
                 string secondBlock = IP.Substring(4, 4);
@@ -119,10 +126,10 @@ namespace encryption.Utils
                 xor = XOR(P4, firstBlock);
                 string union = xor + secondBlock;
                 string IIP = MakePermutations(union, iip);
-                char character = Convert.ToChar(Convert.ToInt32(IIP, 2));
-                writer.Write(character);
+                byte result = Convert.ToByte(Convert.ToInt32(IIP, 2));
+                bytes.Add(result);
             }
-            writer.Close();
+            return bytes;
         }
 
         /// <summary>Generate the keys following the S-DES algorithm</summary>
@@ -178,6 +185,26 @@ namespace encryption.Utils
             return result;
         }
 
+        /// <summary>Read the file and convert each byte to binary</summary>
+        /// <param name="path">The path of the file to read</param>
+        /// <returns>A list with all the binarys</returns>
+        private List<string> ReadFile(string path)
+        {
+            List<string> binaries = new List<string>();
+            BinaryReader reader = new BinaryReader(new FileStream(path, FileMode.Open));
+            while (reader.BaseStream.Position != reader.BaseStream.Length)
+            {
+                byte[] buffer = reader.ReadBytes(1000);
+                foreach (byte Byte in buffer)
+                {
+                    string binary = Convert.ToString(Byte, 2).PadLeft(8, '0');
+                    binaries.Add(binary);
+                }
+            }
+            reader.Close();
+            return binaries;
+        }
+
         /// <summary>Make the substitution for the input</summary>
         /// <param name="input">The binary to check the s-box</param>
         /// <returns>A new binary number switched in the s-boxes</returns>
@@ -209,33 +236,14 @@ namespace encryption.Utils
             return result;
         }
 
-        /// <summary>Read the file and encrypt or decrypt it</summary>
-        /// <param name="path">The path of the file to read</param>
-        /// <param name="K1">The first key</param>
-        /// <param name="K2">The second key</param>
-        /// <param name="permutations">The permutations defined to use</param>
-        /// <returns>The path of the new file</returns>
-        private string TransformMessage(string path, string K1, string K2, Permutations permutations, string type)
+        /// <summary>Write the specified set of bytes to a file</summary>
+        /// <param name="bytes">The bytes to write</param>
+        /// <param name="path">The path to the file</param>
+        private void WriteFile(List<byte> bytes, string path)
         {
-            BinaryReader reader = new BinaryReader(new FileStream(path, FileMode.Open));
-            string name = Path.GetFileNameWithoutExtension(path);
-            string newPath;
-            if (type.Equals("encrypt"))
-                newPath = new FileUtils().CreateFile(name, ".scif", "~/App_Data/Downloads");
-            else
-                newPath = new FileUtils().CreateFile(name, ".txt", "~/App_Data/Downloads");
-            while (reader.BaseStream.Position != reader.BaseStream.Length)
-            {
-                byte[] buffer = reader.ReadBytes(1000);
-                if (type.Equals("encrypt"))
-                    EncryptBytes(buffer, K1, K2, permutations.IP, permutations.EP, permutations.P4, permutations.IIP,
-                                 newPath);
-                else
-                    DecryptBytes(buffer, K1, K2, permutations.IP, permutations.EP, permutations.P4, permutations.IIP,
-                                 newPath);
-            }
-            reader.Close();
-            return newPath;
+            BinaryWriter writer = new BinaryWriter(new FileStream(path, FileMode.OpenOrCreate));
+            writer.Write(bytes.ToArray());
+            writer.Close();
         }
 
         /// <summary>Make and xor operation in two binary strings</summary>
