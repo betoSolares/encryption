@@ -102,7 +102,16 @@ namespace encryption.Controllers
                         }
                         else
                         {
-                            // SDES Encryption
+                            SdesUtils sdes = new SdesUtils();
+                            if (sdes.Encrypt(uploadedPath, numericKey, ref path))
+                            {
+                                return true;
+                            }
+                            else
+                            {
+                                error = "Bad Encryption";
+                                return false;
+                            }
                         }
                     }
                 }

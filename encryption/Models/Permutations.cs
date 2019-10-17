@@ -24,9 +24,9 @@ namespace encryption.Models
             this.p4 = p4;
             this.ep = ep;
             this.ip = ip;
-            foreach (char character in ip)
+            for(int i = 0; i < ip.Length; i++)
             {
-                int index = ip.IndexOf(character);
+                int index = ip.IndexOf(i.ToString());
                 iip += index;
             }
         }
@@ -123,6 +123,6 @@ namespace encryption.Models
         public string P4 { get => p4; }
         public string EP { get => ep; }
         public string IP { get => ip; }
-        public string IIP { get => p10; }
+        public string IIP { get => iip; }
     }
 }
