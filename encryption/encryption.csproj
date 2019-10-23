@@ -113,6 +113,7 @@
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\RSAController.cs" />
     <Compile Include="Controllers\SDESController.cs" />
     <Compile Include="Controllers\TranspositionController.cs" />
     <Compile Include="Global.asax.cs">
@@ -132,6 +133,7 @@
     <Content Include="Views\Shared\Layout.cshtml" />
     <Content Include="Views\Transposition\Index.cshtml" />
     <Content Include="Views\SDES\Index.cshtml" />
+    <Content Include="Views\RSA\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
