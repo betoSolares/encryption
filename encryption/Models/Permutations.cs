@@ -24,7 +24,7 @@ namespace encryption.Models
             this.p4 = p4;
             this.ep = ep;
             this.ip = ip;
-            for(int i = 0; i < ip.Length; i++)
+            for (int i = 0; i < ip.Length; i++)
             {
                 int index = ip.IndexOf(i.ToString());
                 iip += index;
