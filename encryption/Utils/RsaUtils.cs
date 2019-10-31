@@ -71,5 +71,22 @@
             return inv;
         }
 
+        /// <summary>Generate the public key</summary>
+        /// <param name="totient">The number of coprimes between p and q</param>
+        /// <returns>A numberbetween 1 and totient that the greatest commom divisor is equals to 1</returns>
+        private ulong GeneratePublicKey(ulong p, ulong totient)
+        {
+            ulong e = 2;
+            bool isFound = false;
+            while (e < totient && !isFound)
+            {
+                if (GCD(e, totient) == 1 && e < totient)
+                    isFound = true;
+                else
+                    e++;
+            }
+            return e;
+        }
+
     }
 }
