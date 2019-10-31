@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-​
+
 namespace encryption.Utils
 {
     public class RsaUtils
     {
         private readonly FileUtils fileUtils = new FileUtils();
-​
+        
         /// <summary>Generate the public and private key</summary>
         /// <param name="p">The first value for the key generation</param>
         /// <param name="q">The second value for the key generation</param>
@@ -26,7 +26,7 @@ namespace encryption.Utils
             }
             return false;
         }
-​
+        
         /// <summary>Calculate the greatest common divisor of two integers</summary>
         /// <param name="a">The first integer</param>
         /// <param name="b">The second integer</param>
@@ -50,7 +50,7 @@ namespace encryption.Utils
             }
             return b;
         }
-​
+        
         /// <summary>Calculate the private key</summary>
         /// <param name="e">The e value for the modular inverse</param>
         /// <param name="totient">The totient value for the modulat inverse</param>
@@ -79,7 +79,7 @@ namespace encryption.Utils
                 inv = u1;
             return inv;
         }
-​
+        
         /// <summary>Generate the public key</summary>
         /// <param name="totient">The number of coprimes between p and q</param>
         /// <returns>A numberbetween 1 and totient that the greatest commom divisor is equals to 1</returns>
@@ -96,7 +96,7 @@ namespace encryption.Utils
             }
             return e;
         }
-​
+        
         /// <summary>Check if a number is prime or not</summary>
         /// <param name="number">The number to check</param>
         /// <returns>True if it's prime, otherwise false</returns>
@@ -112,7 +112,7 @@ namespace encryption.Utils
                 return true;
             return false;
         }
-​
+        
         /// <summary>Write to a file the key information</summary>
         /// <param name="path">The path of the file</param>
         /// <param name="name">The name of the file</param>
