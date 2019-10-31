@@ -40,7 +40,36 @@
                 }
             }
             return b;
-        }        
+        }
+
+        /// <summary>Calculate the private key</summary>
+        /// <param name="e">The e value for the modular inverse</param>
+        /// <param name="totient">The totient value for the modulat inverse</param>
+        /// <returns>The modular inverse of e and totient</returns>
+        private ulong GeneratePrivateKey(ulong e, ulong totient)
+        {
+            ulong inv;
+            ulong u1 = 1;
+            ulong u3 = e;
+            ulong v1 = 0;
+            ulong v3 = totient;
+            ulong iter = 1;
+            while (v3 != 0)
+            {
+                ulong q = u3 / v3;
+                ulong t3 = u3 % v3;
+                ulong t1 = u1 + q * v1;
+                u1 = v1; v1 = t1; u3 = v3; v3 = t3;
+                iter -= iter;
+            }
+            if (u3 != 1)
+                return 0;
+            if (iter < 0)
+                inv = totient - u1;
+            else
+                inv = u1;
+            return inv;
+        }
 
     }
 }
