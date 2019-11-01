@@ -16,6 +16,8 @@
             $('#message').text("Por favor selecciona un archivo para cifrar.");
         } else if ($('#state').val() == "Bad key") {
             $('#message').text("La clave no puede contener letras repetidas.");
+        } else if ($('#state').val() == "Bad Keys") {
+            $('#message').text("Los dos numeros deben de ser primos.");
         }
     }
 })
