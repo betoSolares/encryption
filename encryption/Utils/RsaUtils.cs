@@ -86,7 +86,13 @@ namespace encryption.Utils
             List<byte> result = new List<byte>();
             foreach (byte Byte in bytes)
             {
-                ulong encrypted = Convert.ToUInt64((Math.Pow(Byte, d) % n) - 3);
+                ulong encrypted;
+                if (Byte - 1 == 0)
+                    encrypted = Convert.ToUInt64(n);
+                else if (Byte - 1 == 1)
+                    encrypted = Convert.ToUInt64(n + 1);
+                else
+                    encrypted = Convert.ToUInt64((Math.Pow(Byte, d) % n));
                 byte newByte = Convert.ToByte(encrypted);
                 result.Add(newByte);
             }
@@ -104,7 +110,7 @@ namespace encryption.Utils
             List<byte> result = new List<byte>();
             foreach (byte Byte in bytes)
             {
-                byte encrypted = Convert.ToByte((Math.Pow(Byte, e) % n) + 3);
+                byte encrypted = Convert.ToByte((Math.Pow(Byte, e) % n) + 1);
                 result.Add(encrypted);
             }
             return result;
