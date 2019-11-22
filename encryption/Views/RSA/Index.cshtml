@@ -1,0 +1,35 @@
+﻿@{
+    ViewBag.Title = "RSA";
+    Layout = "~/Views/Shared/Layout.cshtml";
+}
+<input type="hidden" id="state" value="@ViewBag.Message" />
+<div id="alertBox" class="alertBox" style="display: none">
+    <span class="closebtn" id="closebtn">&times;</span>
+    <p id="message"></p>
+</div>
+<div style="text-align: center">
+    <form style="display: inline-block">
+        <h1>Generar Llaves</h1>
+        <div id="keys" style="display: inline-block">
+            <p>Claves: </p>
+            <input type="number" name="p" min="1" max="2147" placeholder="P" required />
+            <input type="number" name="q" min="1" max="2147" placeholder="Q" required />
+        </div><br /><br />
+        <button type="submit" formaction="/RSA/Keys" formmethod="post">Generar Llaves</button>
+    </form>
+</div>
+<div style="text-align: center">
+    <form enctype="multipart/form-data" style="display: inline-block">
+        <h1>RSA</h1>
+        <input type="file" class="input-file" name="file" id="file" accept=".txt">
+        <label for="file" class="file">
+            <i class="fas fa-file-upload"></i><br />Selecciona un archivo
+        </label>
+        <input type="file" class="input-file" name="key" id="key" accept=".txt">
+        <label for="key" class="key">
+            <i class="fas fa-file-upload"></i><br />Llave a utilizar
+        </label>
+        <button type="submit" formaction="/RSA/Encrypt" formmethod="post">Encriptar</button>
+        <button type="submit" formaction="/RSA/Decrypt" formmethod="post">Desencriptar</button>
+    </form>
+</div>

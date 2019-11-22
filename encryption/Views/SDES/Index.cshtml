@@ -1,0 +1,24 @@
+﻿@{
+    ViewBag.Title = "S-DES";
+    Layout = "~/Views/Shared/Layout.cshtml";
+}
+<input type="hidden" id="state" value="@ViewBag.Message" />
+<div id="alertBox" class="alertBox" style="display: none">
+    <span class="closebtn" id="closebtn">&times;</span>
+    <p id="message"></p>
+</div>
+<div style="text-align: center">
+    <form enctype="multipart/form-data" style="display: inline-block">
+        <h1>S-DES</h1>
+        <input type="file" class="input-file" name="file" id="file" accept=".txt">
+        <label for="file" class="file">
+            <i class="fas fa-file-upload"></i><br />Selecciona un archivo
+        </label>
+        <div id="keys" style="display: inline-block">
+            <p>Clave: </p>
+            <input type="number" name="key" min="1" max="1023" placeholder="Numero" required />
+        </div><br /><br />
+        <button type="submit" formaction="/SDES/Encrypt" formmethod="post">Encriptar</button>
+        <button type="submit" formaction="/SDES/Decrypt" formmethod="post">Desencriptar</button>
+    </form>
+</div>
